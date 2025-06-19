@@ -3,27 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bible Study Tools</title>
+    <title>Church Bible Study Tools</title>
     <style>
         :root {
-            --primary-color: #4a6fa5;
-            --secondary-color: #3a5a80;
-            --accent-color: #e67e22;
-            --light-color: #f8f9fa;
-            --dark-color: #343a40;
-        }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #f9f9f9;
+            --dark: #333;
+            --church-red: #a51c30;
+            --church-gold: #d4af37;
         }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light);
+            color: var(--dark);
             line-height: 1.6;
-            background-color: var(--light-color);
-            color: var(--dark-color);
         }
         
         .container {
@@ -33,595 +31,938 @@
         }
         
         header {
-            background-color: var(--primary-color);
+            background-color: var(--church-red);
             color: white;
-            padding: 30px 0;
+            padding: 20px;
             text-align: center;
             margin-bottom: 30px;
+            border-bottom: 5px solid var(--church-gold);
+        }
+        
+        h1, h2, h3 {
+            color: var(--church-red);
+        }
+        
+        .tool-section {
+            background: white;
             border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--church-gold);
         }
         
-        h1 {
-            margin-bottom: 10px;
-        }
-        
-        .tools-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-        
-        .tool-card {
-            background-color: white;
-            border-radius: 8px;
-            padding: 25px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-        
-        .tool-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .tool-card h3 {
-            color: var(--primary-color);
+        .tab-container {
+            display: flex;
             margin-bottom: 15px;
-            font-size: 1.3rem;
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 10px;
+            overflow-x: auto;
         }
         
-        .tool-content {
-            min-height: 150px;
-        }
-        
-        .btn {
-            display: inline-block;
-            background-color: var(--primary-color);
-            color: white;
+        .tab {
             padding: 10px 20px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background-color 0.3s;
-            margin-top: 15px;
-            border: none;
+            background: #eee;
             cursor: pointer;
+            border-radius: 4px 4px 0 0;
+            margin-right: 5px;
+            white-space: nowrap;
         }
         
-        .btn:hover {
-            background-color: var(--secondary-color);
+        .tab.active {
+            background: var(--church-red);
+            color: white;
         }
         
-        .form-group {
-            margin-bottom: 15px;
+        .tab-content {
+            display: none;
         }
         
-        label {
+        .tab-content.active {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
         }
         
-        input, select, textarea {
-            width: 100%;
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        input, select, button, textarea {
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 16px;
         }
         
-        textarea {
-            min-height: 100px;
-            resize: vertical;
+        button {
+            background-color: var(--church-red);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
         }
         
-        .bible-verse {
-            background-color: #f0f7ff;
-            padding: 15px;
-            border-left: 4px solid var(--primary-color);
-            margin: 15px 0;
-            font-style: italic;
+        button:hover {
+            background-color: #8a1626;
         }
         
-        .verse-reference {
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-top: 10px;
-            text-align: right;
-        }
-        
-        .search-results {
-            margin-top: 20px;
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            padding: 10px;
+        .result {
+            background: #f5f5f5;
+            padding: 20px;
             border-radius: 4px;
+            margin-top: 20px;
         }
         
-        .result-item {
-            padding: 10px;
+        .verse {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
             border-bottom: 1px solid #eee;
         }
         
-        .result-item:last-child {
-            border-bottom: none;
-        }
-        
-        .highlight {
-            background-color: #fffacd;
-            padding: 2px;
-        }
-        
-        .notes-list {
-            margin-top: 15px;
-        }
-        
-        .note-item {
-            padding: 10px;
-            background-color: #f9f9f9;
-            border-left: 3px solid var(--accent-color);
+        .verse-text {
+            font-size: 1.2em;
+            line-height: 1.8;
             margin-bottom: 10px;
         }
         
-        .note-date {
-            font-size: 0.8rem;
-            color: #666;
-            margin-bottom: 5px;
+        .verse-ref {
+            font-weight: bold;
+            color: var(--church-red);
+            font-size: 1.1em;
+        }
+        
+        .error {
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        .reading-plan {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .plan-day {
+            background: #f0f8ff;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid var(--church-gold);
+        }
+        
+        .notes-section textarea {
+            width: 100%;
+            min-height: 150px;
+            margin-bottom: 10px;
+        }
+        
+        .book-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .book-btn {
+            padding: 8px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .book-btn:hover {
+            background: #ddd;
+        }
+        
+        .book-btn.old-testament {
+            background: #e8f4fc;
+        }
+        
+        .book-btn.new-testament {
+            background: #fce8f4;
+        }
+        
+        .chapter-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .chapter-btn {
+            padding: 5px 10px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .chapter-btn:hover {
+            background: #ddd;
+        }
+        
+        .chapter-btn.active {
+            background: var(--church-red);
+            color: white;
         }
         
         footer {
             text-align: center;
             padding: 20px;
-            color: #666;
-            font-size: 0.9rem;
-            margin-top: 40px;
-            border-top: 1px solid #eee;
+            background-color: var(--church-red);
+            color: white;
+            margin-top: 30px;
         }
         
         @media (max-width: 768px) {
-            .tools-container {
+            form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .reading-plan {
                 grid-template-columns: 1fr;
+            }
+            
+            .book-selector {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
             }
         }
     </style>
 </head>
 <body>
+    <header>
+        <h1>Church Bible Study Tools</h1>
+        <p>Resources for personal and group Bible study</p>
+    </header>
+
     <div class="container">
-        <header>
-            <h1>Bible Study Tools</h1>
-            <p>Resources to enhance your Scripture study</p>
-        </header>
-        
-        <div class="tools-container">
-            <!-- Bible Search Tool -->
-            <div class="tool-card">
-                <h3>Bible Search</h3>
-                <div class="tool-content">
-                    <div class="form-group">
-                        <label for="search-query">Search for:</label>
-                        <input type="text" id="search-query" placeholder="Enter keyword or phrase">
-                    </div>
-                    <div class="form-group">
-                        <label for="search-version">Version:</label>
-                        <select id="search-version">
-                            <option value="niv">NIV (New International Version)</option>
-                            <option value="esv">ESV (English Standard Version)</option>
-                            <option value="kjv">KJV (King James Version)</option>
-                            <option value="nlt">NLT (New Living Translation)</option>
-                        </select>
-                    </div>
-                    <button id="search-btn" class="btn">Search</button>
-                    <div class="search-results" id="search-results">
-                        <!-- Results will appear here -->
-                        <p>Enter a search term to find Bible verses.</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Verse of the Day -->
-            <div class="tool-card">
-                <h3>Verse of the Day</h3>
-                <div class="tool-content">
-                    <div class="bible-verse">
-                        <p id="verse-text">For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.</p>
-                        <div class="verse-reference" id="verse-reference">John 3:16 (NIV)</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="verse-version">Version:</label>
-                        <select id="verse-version">
-                            <option value="niv">NIV</option>
-                            <option value="esv">ESV</option>
-                            <option value="kjv">KJV</option>
-                        </select>
-                    </div>
-                    <button id="new-verse-btn" class="btn">New Verse</button>
-                </div>
-            </div>
-            
-            <!-- Reading Planner -->
-            <div class="tool-card">
-                <h3>Reading Planner</h3>
-                <div class="tool-content">
-                    <div class="form-group">
-                        <label for="plan-duration">Plan Duration:</label>
-                        <select id="plan-duration">
-                            <option value="7">1 Week</option>
-                            <option value="30" selected>1 Month</option>
-                            <option value="90">3 Months</option>
-                            <option value="365">1 Year</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="plan-start">Start Date:</label>
-                        <input type="date" id="plan-start">
-                    </div>
-                    <button id="generate-plan-btn" class="btn">Generate Plan</button>
-                    <div id="reading-plan" style="margin-top: 15px;">
-                        <p>Generate a personalized Bible reading plan.</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Study Notes -->
-            <div class="tool-card">
-                <h3>Study Notes</h3>
-                <div class="tool-content">
-                    <div class="form-group">
-                        <label for="note-reference">Bible Reference:</label>
-                        <input type="text" id="note-reference" placeholder="e.g. John 3:16">
-                    </div>
-                    <div class="form-group">
-                        <label for="note-content">Your Notes:</label>
-                        <textarea id="note-content" placeholder="Write your thoughts here..."></textarea>
-                    </div>
-                    <button id="save-note-btn" class="btn">Save Note</button>
-                    <div class="notes-list" id="notes-list">
-                        <!-- Saved notes will appear here -->
-                        <p>No notes yet. Add your first note!</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Word Study -->
-            <div class="tool-card">
-                <h3>Word Study</h3>
-                <div class="tool-content">
-                    <div class="form-group">
-                        <label for="study-word">Word to Study:</label>
-                        <input type="text" id="study-word" placeholder="Enter a biblical word">
-                    </div>
-                    <button id="study-word-btn" class="btn">Study Word</button>
-                    <div id="word-study-results" style="margin-top: 15px;">
-                        <p>Enter a word to study its biblical meaning and usage.</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Prayer Journal -->
-            <div class="tool-card">
-                <h3>Prayer Journal</h3>
-                <div class="tool-content">
-                    <div class="form-group">
-                        <label for="prayer-date">Date:</label>
-                        <input type="date" id="prayer-date">
-                    </div>
-                    <div class="form-group">
-                        <label for="prayer-content">Prayer:</label>
-                        <textarea id="prayer-content" placeholder="Write your prayer here..."></textarea>
-                    </div>
-                    <button id="save-prayer-btn" class="btn">Save Prayer</button>
-                    <div id="prayer-list" style="margin-top: 15px;">
-                        <p>Your prayer journal entries will appear here.</p>
-                    </div>
-                </div>
-            </div>
+        <!-- Tab Navigation -->
+        <div class="tab-container">
+            <div class="tab active" data-tab="bible">Bible Reader</div>
+            <div class="tab" data-tab="devotional">Daily Devotional</div>
+            <div class="tab" data-tab="reading-plan">Reading Plans</div>
+            <div class="tab" data-tab="sermon-notes">Sermon Notes</div>
+            <div class="tab" data-tab="search">Verse Search</div>
         </div>
-        
-        <footer>
-            <p>Bible Study Tools &copy; 2025 | For personal devotional use</p>
-        </footer>
+
+        <!-- Bible Reader -->
+        <section id="bible" class="tool-section tab-content active">
+            <h2>Bible Reader</h2>
+            <form id="bible-form">
+                <select id="bible-version">
+                    <option value="KJV">KJV</option>
+                    <option value="ESV" selected>ESV</option>
+                    <option value="NIV">NIV</option>
+                    <option value="NASB">NASB</option>
+                </select>
+                <button type="button" id="prev-chapter">Previous Chapter</button>
+                <button type="button" id="next-chapter">Next Chapter</button>
+            </form>
+            
+            <h3>Old Testament</h3>
+            <div class="book-selector" id="ot-books">
+                <!-- OT books populated by JavaScript -->
+            </div>
+            
+            <h3>New Testament</h3>
+            <div class="book-selector" id="nt-books">
+                <!-- NT books populated by JavaScript -->
+            </div>
+            
+            <h3>Select Chapter</h3>
+            <div class="chapter-selector" id="chapter-selector">
+                <!-- Chapters populated by JavaScript -->
+            </div>
+            
+            <div id="bible-result" class="result"></div>
+        </section>
+
+        <!-- Daily Devotional -->
+        <section id="devotional" class="tool-section tab-content">
+            <h2>Daily Devotional</h2>
+            <button id="daily-devotional-btn">Get Today's Devotional</button>
+            <div id="devotional-result" class="result">
+                <p>Click the button above to get today's devotional verse and reflection.</p>
+            </div>
+        </section>
+
+        <!-- Reading Plans -->
+        <section id="reading-plan" class="tool-section tab-content">
+            <h2>Bible Reading Plans</h2>
+            <form id="reading-plan-form">
+                <select id="plan-type">
+                    <option value="chronological">Chronological</option>
+                    <option value="new-testament">New Testament</option>
+                    <option value="old-testament">Old Testament</option>
+                    <option value="psalms-proverbs">Psalms & Proverbs</option>
+                    <option value="gospels">Gospels</option>
+                </select>
+                <select id="plan-duration">
+                    <option value="7">7 Days</option>
+                    <option value="30" selected>30 Days</option>
+                    <option value="90">90 Days</option>
+                </select>
+                <button type="submit">Generate Plan</button>
+            </form>
+            <div id="reading-plan-result" class="reading-plan"></div>
+        </section>
+
+        <!-- Sermon Notes -->
+        <section id="sermon-notes" class="tool-section tab-content notes-section">
+            <h2>Sermon Notes</h2>
+            <form id="sermon-form">
+                <input type="text" id="sermon-title" placeholder="Sermon Title">
+                <input type="text" id="sermon-speaker" placeholder="Speaker">
+                <input type="date" id="sermon-date">
+            </form>
+            <textarea id="sermon-notes" placeholder="Write your sermon notes here..."></textarea>
+            <button id="save-sermon">Save Notes</button>
+            <div id="sermon-status"></div>
+            
+            <h3>Saved Sermons</h3>
+            <div id="sermon-list"></div>
+        </section>
+
+        <!-- Verse Search -->
+        <section id="search" class="tool-section tab-content">
+            <h2>Verse Search</h2>
+            <form id="search-form">
+                <input type="text" id="search-query" placeholder="Search for a word or phrase" required>
+                <select id="search-version">
+                    <option value="KJV">KJV</option>
+                    <option value="ESV" selected>ESV</option>
+                    <option value="NIV">NIV</option>
+                </select>
+                <button type="submit">Search</button>
+            </form>
+            <div id="search-results" class="result"></div>
+        </section>
     </div>
 
+    <footer>
+        <p>Church Bible Study Tools &copy; <span id="current-year"></span></p>
+    </footer>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set default date values
-            document.getElementById('plan-start').valueAsDate = new Date();
-            document.getElementById('prayer-date').valueAsDate = new Date();
+        // API Configuration
+        const API_KEY = "f56b7a64fe4dd3af272ac3f76410e43c";
+        const API_BASE = "https://api.scripture.api.bible/v1/bibles";
+
+        // Bible Versions Mapping
+        const BIBLE_VERSIONS = {
+            "KJV": "de4e12af7f28f599-01",
+            "ESV": "7142879509583d59-01",
+            "NIV": "9879dbb7cfe39e4d-01",
+            "NASB": "682c201a7f28f599-01"
+        };
+
+        // Complete list of Bible books with abbreviations and chapter counts
+        const BIBLE_BOOKS = [
+            // Old Testament
+            { name: "Genesis", abbr: "Gen", chapters: 50, testament: "OT" },
+            { name: "Exodus", abbr: "Exod", chapters: 40, testament: "OT" },
+            { name: "Leviticus", abbr: "Lev", chapters: 27, testament: "OT" },
+            { name: "Numbers", abbr: "Num", chapters: 36, testament: "OT" },
+            { name: "Deuteronomy", abbr: "Deut", chapters: 34, testament: "OT" },
+            { name: "Joshua", abbr: "Josh", chapters: 24, testament: "OT" },
+            { name: "Judges", abbr: "Judg", chapters: 21, testament: "OT" },
+            { name: "Ruth", abbr: "Ruth", chapters: 4, testament: "OT" },
+            { name: "1 Samuel", abbr: "1Sam", chapters: 31, testament: "OT" },
+            { name: "2 Samuel", abbr: "2Sam", chapters: 24, testament: "OT" },
+            { name: "1 Kings", abbr: "1Kgs", chapters: 22, testament: "OT" },
+            { name: "2 Kings", abbr: "2Kgs", chapters: 25, testament: "OT" },
+            { name: "1 Chronicles", abbr: "1Chr", chapters: 29, testament: "OT" },
+            { name: "2 Chronicles", abbr: "2Chr", chapters: 36, testament: "OT" },
+            { name: "Ezra", abbr: "Ezra", chapters: 10, testament: "OT" },
+            { name: "Nehemiah", abbr: "Neh", chapters: 13, testament: "OT" },
+            { name: "Esther", abbr: "Esth", chapters: 10, testament: "OT" },
+            { name: "Job", abbr: "Job", chapters: 42, testament: "OT" },
+            { name: "Psalms", abbr: "Ps", chapters: 150, testament: "OT" },
+            { name: "Proverbs", abbr: "Prov", chapters: 31, testament: "OT" },
+            { name: "Ecclesiastes", abbr: "Eccl", chapters: 12, testament: "OT" },
+            { name: "Song of Solomon", abbr: "Song", chapters: 8, testament: "OT" },
+            { name: "Isaiah", abbr: "Isa", chapters: 66, testament: "OT" },
+            { name: "Jeremiah", abbr: "Jer", chapters: 52, testament: "OT" },
+            { name: "Lamentations", abbr: "Lam", chapters: 5, testament: "OT" },
+            { name: "Ezekiel", abbr: "Ezek", chapters: 48, testament: "OT" },
+            { name: "Daniel", abbr: "Dan", chapters: 12, testament: "OT" },
+            { name: "Hosea", abbr: "Hos", chapters: 14, testament: "OT" },
+            { name: "Joel", abbr: "Joel", chapters: 3, testament: "OT" },
+            { name: "Amos", abbr: "Amos", chapters: 9, testament: "OT" },
+            { name: "Obadiah", abbr: "Obad", chapters: 1, testament: "OT" },
+            { name: "Jonah", abbr: "Jonah", chapters: 4, testament: "OT" },
+            { name: "Micah", abbr: "Mic", chapters: 7, testament: "OT" },
+            { name: "Nahum", abbr: "Nah", chapters: 3, testament: "OT" },
+            { name: "Habakkuk", abbr: "Hab", chapters: 3, testament: "OT" },
+            { name: "Zephaniah", abbr: "Zeph", chapters: 3, testament: "OT" },
+            { name: "Haggai", abbr: "Hag", chapters: 2, testament: "OT" },
+            { name: "Zechariah", abbr: "Zech", chapters: 14, testament: "OT" },
+            { name: "Malachi", abbr: "Mal", chapters: 4, testament: "OT" },
             
-            // Sample verses for Verse of the Day
-            const sampleVerses = [
-                {
-                    text: "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.",
-                    reference: "John 3:16 (NIV)"
-                },
-                {
-                    text: "Trust in the LORD with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.",
-                    reference: "Proverbs 3:5-6 (NIV)"
-                },
-                {
-                    text: "I can do all this through him who gives me strength.",
-                    reference: "Philippians 4:13 (NIV)"
-                },
-                {
-                    text: "The LORD is my shepherd, I lack nothing.",
-                    reference: "Psalm 23:1 (NIV)"
-                },
-                {
-                    text: "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God.",
-                    reference: "Philippians 4:6 (NIV)"
+            // New Testament
+            { name: "Matthew", abbr: "Matt", chapters: 28, testament: "NT" },
+            { name: "Mark", abbr: "Mark", chapters: 16, testament: "NT" },
+            { name: "Luke", abbr: "Luke", chapters: 24, testament: "NT" },
+            { name: "John", abbr: "John", chapters: 21, testament: "NT" },
+            { name: "Acts", abbr: "Acts", chapters: 28, testament: "NT" },
+            { name: "Romans", abbr: "Rom", chapters: 16, testament: "NT" },
+            { name: "1 Corinthians", abbr: "1Cor", chapters: 16, testament: "NT" },
+            { name: "2 Corinthians", abbr: "2Cor", chapters: 13, testament: "NT" },
+            { name: "Galatians", abbr: "Gal", chapters: 6, testament: "NT" },
+            { name: "Ephesians", abbr: "Eph", chapters: 6, testament: "NT" },
+            { name: "Philippians", abbr: "Phil", chapters: 4, testament: "NT" },
+            { name: "Colossians", abbr: "Col", chapters: 4, testament: "NT" },
+            { name: "1 Thessalonians", abbr: "1Thess", chapters: 5, testament: "NT" },
+            { name: "2 Thessalonians", abbr: "2Thess", chapters: 3, testament: "NT" },
+            { name: "1 Timothy", abbr: "1Tim", chapters: 6, testament: "NT" },
+            { name: "2 Timothy", abbr: "2Tim", chapters: 4, testament: "NT" },
+            { name: "Titus", abbr: "Titus", chapters: 3, testament: "NT" },
+            { name: "Philemon", abbr: "Phlm", chapters: 1, testament: "NT" },
+            { name: "Hebrews", abbr: "Heb", chapters: 13, testament: "NT" },
+            { name: "James", abbr: "Jas", chapters: 5, testament: "NT" },
+            { name: "1 Peter", abbr: "1Pet", chapters: 5, testament: "NT" },
+            { name: "2 Peter", abbr: "2Pet", chapters: 3, testament: "NT" },
+            { name: "1 John", abbr: "1John", chapters: 5, testament: "NT" },
+            { name: "2 John", abbr: "2John", chapters: 1, testament: "NT" },
+            { name: "3 John", abbr: "3John", chapters: 1, testament: "NT" },
+            { name: "Jude", abbr: "Jude", chapters: 1, testament: "NT" },
+            { name: "Revelation", abbr: "Rev", chapters: 22, testament: "NT" }
+        ];
+
+        // Current reading state
+        let currentState = {
+            book: "Gen",
+            chapter: 1,
+            version: "ESV"
+        };
+
+        // DOM Elements
+        const bibleForm = document.getElementById("bible-form");
+        const prevChapterBtn = document.getElementById("prev-chapter");
+        const nextChapterBtn = document.getElementById("next-chapter");
+        const bibleVersionSelect = document.getElementById("bible-version");
+        const otBooksContainer = document.getElementById("ot-books");
+        const ntBooksContainer = document.getElementById("nt-books");
+        const chapterSelector = document.getElementById("chapter-selector");
+        const bibleResult = document.getElementById("bible-result");
+        const dailyDevotionalBtn = document.getElementById("daily-devotional-btn");
+        const devotionalResult = document.getElementById("devotional-result");
+        const readingPlanForm = document.getElementById("reading-plan-form");
+        const searchForm = document.getElementById("search-form");
+        const saveSermonBtn = document.getElementById("save-sermon");
+        const tabs = document.querySelectorAll(".tab");
+        const tabContents = document.querySelectorAll(".tab-content");
+        const currentYear = document.getElementById("current-year");
+
+        // Initialize the app
+        document.addEventListener("DOMContentLoaded", () => {
+            // Set current year in footer
+            currentYear.textContent = new Date().getFullYear();
+            
+            // Populate Bible books
+            populateBookSelectors();
+            
+            // Load initial chapter
+            loadChapterSelector(currentState.book);
+            loadBibleChapter(currentState.book, currentState.chapter, currentState.version);
+            
+            // Load saved sermons
+            loadSermons();
+            
+            // Set up event listeners
+            bibleVersionSelect.addEventListener("change", changeVersion);
+            prevChapterBtn.addEventListener("click", prevChapter);
+            nextChapterBtn.addEventListener("click", nextChapter);
+            dailyDevotionalBtn.addEventListener("click", getDailyDevotional);
+            readingPlanForm.addEventListener("submit", handleReadingPlan);
+            searchForm.addEventListener("submit", handleSearch);
+            saveSermonBtn.addEventListener("click", saveSermon);
+            
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener("click", () => {
+                    tabs.forEach(t => t.classList.remove("active"));
+                    tabContents.forEach(c => c.classList.remove("active"));
+                    
+                    tab.classList.add("active");
+                    document.getElementById(tab.dataset.tab).classList.add("active");
+                });
+            });
+        });
+
+        // Populate OT and NT book selectors
+        function populateBookSelectors() {
+            otBooksContainer.innerHTML = "";
+            ntBooksContainer.innerHTML = "";
+            
+            BIBLE_BOOKS.forEach(book => {
+                const btn = document.createElement("button");
+                btn.className = `book-btn ${book.testament.toLowerCase()}-testament`;
+                btn.textContent = book.name;
+                btn.dataset.abbr = book.abbr;
+                btn.addEventListener("click", () => {
+                    currentState.book = book.abbr;
+                    currentState.chapter = 1;
+                    loadChapterSelector(book.abbr);
+                    loadBibleChapter(book.abbr, 1, currentState.version);
+                });
+                
+                if (book.testament === "OT") {
+                    otBooksContainer.appendChild(btn);
+                } else {
+                    ntBooksContainer.appendChild(btn);
                 }
-            ];
+            });
+        }
+
+        // Load chapter selector for a book
+        function loadChapterSelector(bookAbbr) {
+            chapterSelector.innerHTML = "";
+            const book = BIBLE_BOOKS.find(b => b.abbr === bookAbbr);
+            if (!book) return;
+
+            for (let i = 1; i <= book.chapters; i++) {
+                const btn = document.createElement("button");
+                btn.className = "chapter-btn";
+                if (i === currentState.chapter) {
+                    btn.classList.add("active");
+                }
+                btn.textContent = i;
+                btn.addEventListener("click", () => {
+                    currentState.chapter = i;
+                    loadBibleChapter(bookAbbr, i, currentState.version);
+                    // Update active chapter button
+                    document.querySelectorAll(".chapter-btn").forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                });
+                chapterSelector.appendChild(btn);
+            }
+        }
+
+        // Load Bible chapter
+        async function loadBibleChapter(book, chapter, version) {
+            bibleResult.innerHTML = "<p>Loading chapter...</p>";
             
-            // Display random verse
-            function displayRandomVerse() {
-                const randomIndex = Math.floor(Math.random() * sampleVerses.length);
-                const verse = sampleVerses[randomIndex];
-                document.getElementById('verse-text').textContent = verse.text;
-                document.getElementById('verse-reference').textContent = verse.reference;
+            try {
+                const bibleId = BIBLE_VERSIONS[version];
+                const url = `${API_BASE}/${bibleId}/chapters/${book}.${chapter}?content-type=html`;
+                
+                const response = await fetch(url, {
+                    headers: { "api-key": API_KEY }
+                });
+
+                if (!response.ok) throw new Error("Failed to fetch chapter");
+
+                const data = await response.json();
+                const bookName = BIBLE_BOOKS.find(b => b.abbr === book).name;
+                
+                bibleResult.innerHTML = `
+                    <h3>${bookName} ${chapter} (${version})</h3>
+                    <div>${data.data.content}</div>
+                `;
+            } catch (error) {
+                bibleResult.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+            }
+        }
+
+        // Change version
+        async function changeVersion() {
+            const version = bibleVersionSelect.value;
+            if (version === currentState.version) return;
+            
+            currentState.version = version;
+            loadBibleChapter(currentState.book, currentState.chapter, version);
+        }
+
+        // Previous chapter
+        function prevChapter() {
+            const bookIndex = BIBLE_BOOKS.findIndex(b => b.abbr === currentState.book);
+            const book = BIBLE_BOOKS[bookIndex];
+            
+            if (currentState.chapter > 1) {
+                currentState.chapter--;
+            } else if (bookIndex > 0) {
+                currentState.book = BIBLE_BOOKS[bookIndex - 1].abbr;
+                currentState.chapter = BIBLE_BOOKS[bookIndex - 1].chapters;
             }
             
-            // Initial verse
-            displayRandomVerse();
+            loadChapterSelector(currentState.book);
+            loadBibleChapter(currentState.book, currentState.chapter, currentState.version);
+        }
+
+        // Next chapter
+        function nextChapter() {
+            const bookIndex = BIBLE_BOOKS.findIndex(b => b.abbr === currentState.book);
+            const book = BIBLE_BOOKS[bookIndex];
             
-            // New verse button
-            document.getElementById('new-verse-btn').addEventListener('click', displayRandomVerse);
+            if (currentState.chapter < book.chapters) {
+                currentState.chapter++;
+            } else if (bookIndex < BIBLE_BOOKS.length - 1) {
+                currentState.book = BIBLE_BOOKS[bookIndex + 1].abbr;
+                currentState.chapter = 1;
+            }
             
-            // Bible Search - mock implementation
-            document.getElementById('search-btn').addEventListener('click', function() {
-                const query = document.getElementById('search-query').value.trim();
-                const version = document.getElementById('search-version').value;
-                
-                if (!query) {
-                    alert('Please enter a search term');
-                    return;
-                }
-                
-                // Mock search results
-                const mockResults = [
-                    {
-                        text: `In the beginning was the ${query}, and the ${query} was with God, and the ${query} was God.`,
-                        reference: "John 1:1 (" + version.toUpperCase() + ")"
-                    },
-                    {
-                        text: `Your ${query} is a lamp to my feet and a light to my path.`,
-                        reference: "Psalm 119:105 (" + version.toUpperCase() + ")"
-                    },
-                    {
-                        text: `But seek first his kingdom and his righteousness, and all these ${query} will be given to you as well.`,
-                        reference: "Matthew 6:33 (" + version.toUpperCase() + ")"
-                    }
+            loadChapterSelector(currentState.book);
+            loadBibleChapter(currentState.book, currentState.chapter, currentState.version);
+        }
+
+        // Get daily devotional
+        async function getDailyDevotional() {
+            devotionalResult.innerHTML = "<p>Loading devotional...</p>";
+            
+            try {
+                // Get random verse from a predefined list of devotional verses
+                const devotionalVerses = [
+                    "Ps.23.1", "Matt.11.28", "Phil.4.6", "Rom.8.38", 
+                    "Isa.40.31", "Josh.1.9", "Prov.3.5", "2Cor.12.9",
+                    "John.14.27", "Ps.46.10", "Rom.15.13", "Heb.12.1"
                 ];
+                const randomVerse = devotionalVerses[Math.floor(Math.random() * devotionalVerses.length)];
+                const [book, chapter, verse] = randomVerse.split(".");
                 
-                // Display results
-                const resultsContainer = document.getElementById('search-results');
-                resultsContainer.innerHTML = '';
+                // Get verse text
+                const bibleId = BIBLE_VERSIONS["ESV"];
+                const verseUrl = `${API_BASE}/${bibleId}/verses/${randomVerse}`;
+                const verseResponse = await fetch(verseUrl, {
+                    headers: { "api-key": API_KEY }
+                });
                 
-                if (mockResults.length === 0) {
-                    resultsContainer.innerHTML = '<p>No results found for "' + query + '".</p>';
-                    return;
-                }
+                if (!verseResponse.ok) throw new Error("Failed to fetch verse");
                 
-                mockResults.forEach(result => {
-                    const resultItem = document.createElement('div');
-                    resultItem.className = 'result-item';
+                const verseData = await verseResponse.json();
+                const bookName = BIBLE_BOOKS.find(b => b.abbr === book).name;
+                
+                // Get devotional content (mock data in a real app you might have your own devotional content)
+                const devotionals = [
+                    "This verse reminds us of God's constant presence in our lives. Even in difficult times, He is our shepherd guiding us.",
+                    "Jesus offers rest for our weary souls. Come to Him when you feel burdened and find peace in His presence.",
+                    "Worry accomplishes nothing but prayer changes everything. Bring your requests to God with thanksgiving.",
+                    "Nothing can separate us from God's love - not trouble, hardship, or even death. His love is eternal.",
+                    "When we feel weak, God gives us strength. Those who hope in Him will renew their power.",
+                    "Be strong and courageous! God goes with you wherever you may go.",
+                    "Trust in the Lord completely, not leaning on your own understanding.",
+                    "God's grace is sufficient for you. His power is made perfect in weakness.",
+                    "Peace is not the absence of trouble but the presence of Christ.",
+                    "Be still and know that He is God. In the quiet we hear His voice.",
+                    "May the God of hope fill you with joy and peace as you trust in Him.",
+                    "Let us run with perseverance the race marked out for us, fixing our eyes on Jesus."
+                ];
+                const devotionalText = devotionals[devotionalVerses.indexOf(randomVerse)];
+                
+                devotionalResult.innerHTML = `
+                    <div class="verse">
+                        <p class="verse-text">${verseData.data.content}</p>
+                        <p class="verse-ref">${bookName} ${chapter}:${verse} (ESV)</p>
+                    </div>
+                    <div style="margin-top: 20px; padding: 15px; background: #f8f8f8; border-radius: 5px;">
+                        <h3>Devotional Thought</h3>
+                        <p>${devotionalText}</p>
+                        <button id="read-devotional-chapter">Read Full Chapter</button>
+                    </div>
+                `;
+                
+                // Add event listener to read full chapter button
+                document.getElementById("read-devotional-chapter").addEventListener("click", () => {
+                    currentState.book = book;
+                    currentState.chapter = parseInt(chapter);
+                    bibleVersionSelect.value = "ESV";
+                    currentState.version = "ESV";
                     
-                    // Highlight search term in results
-                    const highlightedText = result.text.replace(new RegExp(query, 'gi'), 
-                        match => `<span class="highlight">${match}</span>`);
-                    
-                    resultItem.innerHTML = `
-                        <p>${highlightedText}</p>
-                        <div class="verse-reference">${result.reference}</div>
+                    document.querySelector('[data-tab="bible"]').click();
+                    loadChapterSelector(currentState.book);
+                    loadBibleChapter(currentState.book, currentState.chapter, currentState.version);
+                });
+            } catch (error) {
+                devotionalResult.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+            }
+        }
+
+        // Handle reading plan
+        async function handleReadingPlan(e) {
+            e.preventDefault();
+            const planType = document.getElementById("plan-type").value;
+            const duration = document.getElementById("plan-duration").value;
+            const resultDiv = document.getElementById("reading-plan-result");
+
+            resultDiv.innerHTML = "<p>Generating reading plan...</p>";
+
+            try {
+                let planHTML = "";
+                const bibleId = BIBLE_VERSIONS["ESV"];
+
+                for (let day = 1; day <= duration; day++) {
+                    const passage = getDailyReading(planType, day);
+                    const url = `${API_BASE}/${bibleId}/verses/${passage.reference}`;
+
+                    const response = await fetch(url, {
+                        headers: { "api-key": API_KEY }
+                    });
+
+                    if (!response.ok) throw new Error(`Failed to fetch day ${day}`);
+
+                    const data = await response.json();
+
+                    planHTML += `
+                        <div class="plan-day">
+                            <h3>Day ${day}</h3>
+                            <p><strong>${passage.reference}</strong> - ${passage.description}</p>
+                            <p class="verse-text">${data.data.content.substring(0, 200)}...</p>
+                            <button class="read-more" data-ref="${passage.reference}">Read Full Passage</button>
+                        </div>
                     `;
-                    
-                    resultsContainer.appendChild(resultItem);
+                }
+
+                resultDiv.innerHTML = planHTML;
+                
+                // Add event listeners to read more buttons
+                document.querySelectorAll(".read-more").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        const refParts = btn.dataset.ref.split(".");
+                        currentState.book = refParts[0];
+                        currentState.chapter = parseInt(refParts[1]);
+                        bibleVersionSelect.value = "ESV";
+                        currentState.version = "ESV";
+                        
+                        document.querySelector('[data-tab="bible"]').click();
+                        loadChapterSelector(currentState.book);
+                        loadBibleChapter(currentState.book, currentState.chapter, currentState.version);
+                    });
+                });
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+            }
+        }
+
+        // Get daily reading for plan
+        function getDailyReading(planType, day) {
+            const plans = {
+                "chronological": [
+                    { reference: "Gen.1.1", description: "Creation" },
+                    { reference: "Gen.3.1", description: "The Fall" },
+                    { reference: "Exod.20.1", description: "Ten Commandments" },
+                    { reference: "Psa.23.1", description: "The Lord is My Shepherd" },
+                    { reference: "Isa.53.1", description: "Suffering Servant" },
+                    { reference: "Matt.1.1", description: "Genealogy of Jesus" },
+                    { reference: "John.1.1", description: "The Word" },
+                    { reference: "Rom.8.1", description: "Life in the Spirit" },
+                    { reference: "Rev.21.1", description: "New Heaven and Earth" }
+                ],
+                "new-testament": [
+                    { reference: "Matt.5.1", description: "Sermon on the Mount" },
+                    { reference: "Mark.10.1", description: "Teachings on Divorce" },
+                    { reference: "Luke.15.1", description: "Parable of Lost Sheep" },
+                    { reference: "John.3.1", description: "Born Again" },
+                    { reference: "Acts.2.1", description: "Pentecost" },
+                    { reference: "Rom.12.1", description: "Living Sacrifice" },
+                    { reference: "1Cor.13.1", description: "Love Chapter" },
+                    { reference: "Gal.5.1", description: "Freedom in Christ" },
+                    { reference: "Eph.6.1", description: "Armor of God" }
+                ],
+                "old-testament": [
+                    { reference: "Gen.1.1", description: "Creation" },
+                    { reference: "Exod.3.1", description: "Burning Bush" },
+                    { reference: "Psa.1.1", description: "Blessed is the Man" },
+                    { reference: "Prov.3.1", description: "Trust in the Lord" },
+                    { reference: "Isa.40.1", description: "Comfort for God's People" },
+                    { reference: "Jer.29.1", description: "Letter to Exiles" },
+                    { reference: "Dan.3.1", description: "Fiery Furnace" },
+                    { reference: "Jonah.1.1", description: "Jonah's Call" },
+                    { reference: "Mal.3.1", description: "Messenger of the Covenant" }
+                ],
+                "psalms-proverbs": [
+                    { reference: "Psa.1.1", description: "Two Ways to Live" },
+                    { reference: "Psa.23.1", description: "The Lord is My Shepherd" },
+                    { reference: "Psa.51.1", description: "Create in Me a Clean Heart" },
+                    { reference: "Psa.91.1", description: "My Refuge and Fortress" },
+                    { reference: "Psa.119.1", description: "Blessed Are the Blameless" },
+                    { reference: "Prov.1.1", description: "Purpose of Proverbs" },
+                    { reference: "Prov.3.1", description: "Trust in the Lord" },
+                    { reference: "Prov.31.1", description: "The Excellent Wife" }
+                ],
+                "gospels": [
+                    { reference: "Matt.5.1", description: "Sermon on the Mount" },
+                    { reference: "Matt.28.1", description: "Resurrection" },
+                    { reference: "Mark.1.1", description: "Beginning of the Gospel" },
+                    { reference: "Mark.16.1", description: "Great Commission" },
+                    { reference: "Luke.2.1", description: "Birth of Jesus" },
+                    { reference: "Luke.15.1", description: "Parables of Lost Things" },
+                    { reference: "John.1.1", description: "The Word Became Flesh" },
+                    { reference: "John.3.1", description: "Born Again" },
+                    { reference: "John.14.1", description: "Jesus the Way" }
+                ]
+            };
+
+            // Cycle through plan if duration > available readings
+            const plan = plans[planType];
+            return plan[(day - 1) % plan.length];
+        }
+
+        // Handle search
+        async function handleSearch(e) {
+            e.preventDefault();
+            const query = document.getElementById("search-query").value;
+            const version = document.getElementById("search-version").value;
+            const resultsDiv = document.getElementById("search-results");
+
+            resultsDiv.innerHTML = "<p>Searching...</p>";
+
+            try {
+                const bibleId = BIBLE_VERSIONS[version];
+                const url = `${API_BASE}/${bibleId}/search?query=${encodeURIComponent(query)}`;
+
+                const response = await fetch(url, {
+                    headers: { "api-key": API_KEY }
+                });
+
+                if (!response.ok) throw new Error("Search failed");
+
+                const data = await response.json();
+                displaySearchResults(data, resultsDiv, version);
+            } catch (error) {
+                resultsDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+            }
+        }
+
+        // Display search results
+        function displaySearchResults(data, container, version) {
+            if (!data.data?.verses?.length) {
+                container.innerHTML = "<p>No results found.</p>";
+                return;
+            }
+
+            let html = `<h3>Search Results (${version})</h3>`;
+            data.data.verses.slice(0, 10).forEach(verse => {
+                html += `
+                    <div class="verse">
+                        <p class="verse-text">${verse.text}</p>
+                        <p class="verse-ref">${verse.reference}</p>
+                        <button class="go-to-verse" data-ref="${verse.reference}">Read in Context</button>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            
+            // Add event listeners to go to verse buttons
+            document.querySelectorAll(".go-to-verse").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const ref = btn.dataset.ref;
+                    // This is a simplified parser - in a real app you'd need a more robust solution
+                    const parts = ref.split(/[\s:]+/);
+                    if (parts.length >= 2) {
+                        const book = BIBLE_BOOKS.find(b => b.name === parts[0] || b.name.startsWith(parts[0]))?.abbr;
+                        if (book) {
+                            currentState.book = book;
+                            currentState.chapter = parseInt(parts[1]);
+                            bibleVersionSelect.value = version;
+                            currentState.version = version;
+                            
+                            document.querySelector('[data-tab="bible"]').click();
+                            loadChapterSelector(currentState.book);
+                            loadBibleChapter(currentState.book, currentState.chapter, currentState.version);
+                        }
+                    }
                 });
             });
+        }
+
+        // Save sermon notes
+        function saveSermon() {
+            const title = document.getElementById("sermon-title").value;
+            const speaker = document.getElementById("sermon-speaker").value;
+            const date = document.getElementById("sermon-date").value;
+            const notes = document.getElementById("sermon-notes").value;
             
-            // Reading Planner - mock implementation
-            document.getElementById('generate-plan-btn').addEventListener('click', function() {
-                const duration = parseInt(document.getElementById('plan-duration').value);
-                const startDate = new Date(document.getElementById('plan-start').value);
-                
-                if (isNaN(startDate.getTime())) {
-                    alert('Please select a valid start date');
-                    return;
-                }
-                
-                // Generate mock reading plan
-                const planContainer = document.getElementById('reading-plan');
-                planContainer.innerHTML = '<h4>Your Reading Plan:</h4>';
-                
-                const planList = document.createElement('ul');
-                planList.style.marginTop = '10px';
-                
-                for (let i = 0; i < duration; i++) {
-                    const currentDate = new Date(startDate);
-                    currentDate.setDate(startDate.getDate() + i);
-                    
-                    const dateStr = currentDate.toLocaleDateString('en-US', { 
-                        month: 'short', 
-                        day: 'numeric' 
-                    });
-                    
-                    // Mock reading assignments
-                    const readings = [
-                        "Genesis " + (i+1),
-                        "Psalm " + (i+1),
-                        "Matthew " + Math.ceil((i+1)/3)
-                    ];
-                    
-                    const listItem = document.createElement('li');
-                    listItem.style.marginBottom = '8px';
-                    listItem.innerHTML = `<strong>${dateStr}:</strong> ${readings.join(', ')}`;
-                    
-                    planList.appendChild(listItem);
-                }
-                
-                planContainer.appendChild(planList);
-            });
-            
-            // Study Notes - using localStorage
-            function loadNotes() {
-                const notes = JSON.parse(localStorage.getItem('bibleNotes')) || [];
-                const notesList = document.getElementById('notes-list');
-                
-                notesList.innerHTML = '';
-                
-                if (notes.length === 0) {
-                    notesList.innerHTML = '<p>No notes yet. Add your first note!</p>';
-                    return;
-                }
-                
-                notes.forEach((note, index) => {
-                    const noteItem = document.createElement('div');
-                    noteItem.className = 'note-item';
-                    noteItem.innerHTML = `
-                        <div class="note-date">${new Date(note.date).toLocaleDateString()} - ${note.reference}</div>
-                        <p>${note.content}</p>
-                        <button class="delete-note" data-index="${index}">Delete</button>
-                    `;
-                    notesList.appendChild(noteItem);
-                });
-                
-                // Add delete event listeners
-                document.querySelectorAll('.delete-note').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const index = parseInt(this.getAttribute('data-index'));
-                        deleteNote(index);
-                    });
-                });
+            if (!title || !notes) {
+                document.getElementById("sermon-status").innerHTML = "<p class='error'>Title and notes are required</p>";
+                return;
             }
             
-            function saveNote() {
-                const reference = document.getElementById('note-reference').value.trim();
-                const content = document.getElementById('note-content').value.trim();
-                
-                if (!reference || !content) {
-                    alert('Please enter both a reference and note content');
-                    return;
-                }
-                
-                const notes = JSON.parse(localStorage.getItem('bibleNotes')) || [];
-                
-                notes.push({
-                    date: new Date().toISOString(),
-                    reference,
-                    content
-                });
-                
-                localStorage.setItem('bibleNotes', JSON.stringify(notes));
-                loadNotes();
-                
-                // Clear form
-                document.getElementById('note-reference').value = '';
-                document.getElementById('note-content').value = '';
+            const sermon = {
+                id: Date.now(),
+                title,
+                speaker,
+                date,
+                notes,
+                createdAt: new Date().toISOString()
+            };
+            
+            // Get existing sermons
+            let sermons = JSON.parse(localStorage.getItem("sermons") || "[]");
+            sermons.unshift(sermon);
+            
+            // Save to localStorage
+            localStorage.setItem("sermons", JSON.stringify(sermons));
+            
+            // Clear form
+            document.getElementById("sermon-title").value = "";
+            document.getElementById("sermon-speaker").value = "";
+            document.getElementById("sermon-date").value = "";
+            document.getElementById("sermon-notes").value = "";
+            
+            // Show success message
+            document.getElementById("sermon-status").innerHTML = "<p>Sermon notes saved!</p>";
+            setTimeout(() => {
+                document.getElementById("sermon-status").innerHTML = "";
+            }, 3000);
+            
+            // Refresh sermon list
+            loadSermons();
+        }
+
+        // Load sermons
+        function loadSermons() {
+            const sermonList = document.getElementById("sermon-list");
+            const sermons = JSON.parse(localStorage.getItem("sermons") || "[]");
+            
+            if (sermons.length === 0) {
+                sermonList.innerHTML = "<p>No saved sermons yet</p>";
+                return;
             }
             
-            function deleteNote(index) {
-                const notes = JSON.parse(localStorage.getItem('bibleNotes')) || [];
-                notes.splice(index, 1);
-                localStorage.setItem('bibleNotes', JSON.stringify(notes));
-                loadNotes();
-            }
-            
-            document.getElementById('save-note-btn').addEventListener('click', saveNote);
-            
-            // Word Study - mock implementation
-            document.getElementById('study-word-btn').addEventListener('click', function() {
-                const word = document.getElementById('study-word').value.trim();
-                
-                if (!word) {
-                    alert('Please enter a word to study');
-                    return;
-                }
-                
-                const resultsContainer = document.getElementById('word-study-results');
-                
-                // Mock word study results
-                resultsContainer.innerHTML = `
-                    <h4>Study of "${word}"</h4>
-                    <p><strong>Definition:</strong> A biblical term meaning "example definition"</p>
-                    <p><strong>Original Language:</strong> Greek/Hebrew (transliteration)</p>
-                    <p><strong>Key Passages:</strong></p>
-                    <ul>
-                        <li>Book 1:1 - Example verse using ${word}</li>
-                        <li>Book 2:3 - Another example with ${word}</li>
-                    </ul>
+            let html = "";
+            sermons.forEach(sermon => {
+                const date = sermon.date ? new Date(sermon.date).toLocaleDateString() : "No date";
+                html += `
+                    <div class="sermon-item" style="margin-bottom: 15px; padding: 15px; background: #f8f8f8; border-radius: 5px;">
+                        <h4>${sermon.title}</h4>
+                        <p><strong>Speaker:</strong> ${sermon.speaker || "Unknown"} | <strong>Date:</strong> ${date}</p>
+                        <p>${sermon.notes.substring(0, 100)}...</p>
+                        <button class="view-sermon" data-id="${sermon.id}">View Full Notes</button>
+                        <button class="delete-sermon" data-id="${sermon.id}">Delete</button>
+                    </div>
                 `;
             });
             
-            // Prayer Journal - using localStorage
-            function loadPrayers() {
-                const prayers = JSON.parse(localStorage.getItem('prayerJournal')) || [];
-                const prayerList = document.getElementById('prayer-list');
-                
-                prayerList.innerHTML = '';
-                
-                if (prayers.length === 0) {
-                    prayerList.innerHTML = '<p>No prayers yet. Add your first prayer!</p>';
-                    return;
-                }
-                
-                prayers.forEach((prayer, index) => {
-                    const prayerItem = document.createElement('div');
-                    prayerItem.className = 'note-item';
-                    prayerItem.innerHTML = `
-                        <div class="note-date">${new Date(prayer.date).toLocaleDateString()}</div>
-                        <p>${prayer.content}</p>
-                        <button class="delete-prayer" data-index="${index}">Delete</button>
-                    `;
-                    prayerList.appendChild(prayerItem);
+            sermonList.innerHTML = html;
+            
+            // Add event listeners
+            document.querySelectorAll(".view-sermon").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const id = parseInt(btn.dataset.id);
+                    const sermon = sermons.find(s => s.id === id);
+                    if (sermon) {
+                        document.getElementById("sermon-title").value = sermon.title;
+                        document.getElementById("sermon-speaker").value = sermon.speaker || "";
+                        document.getElementById("sermon-date").value = sermon.date || "";
+                        document.getElementById("sermon-notes").value = sermon.notes;
+                    }
                 });
-                
-                // Add delete event listeners
-                document.querySelectorAll('.delete-prayer').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const index = parseInt(this.getAttribute('data-index'));
-                        deletePrayer(index);
-                    });
+            });
+            
+            document.querySelectorAll(".delete-sermon").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const id = parseInt(btn.dataset.id);
+                    const updatedSermons = sermons.filter(s => s.id !== id);
+                    localStorage.setItem("sermons", JSON.stringify(updatedSermons));
+                    loadSermons();
                 });
-            }
-            
-            function savePrayer() {
-                const date = document.getElementById('prayer-date').value;
-                const content = document.getElementById('prayer-content').value.trim();
-                
-                if (!content) {
-                    alert('Please enter your prayer');
-                    return;
-                }
-                
-                const prayers = JSON.parse(localStorage.getItem('prayerJournal')) || [];
-                
-                prayers.push({
-                    date,
-                    content
-                });
-                
-                localStorage.setItem('prayerJournal', JSON.stringify(prayers));
-                loadPrayers();
-                
-                // Clear content field
-                document.getElementById('prayer-content').value = '';
-            }
-            
-            function deletePrayer(index) {
-                const prayers = JSON.parse(localStorage.getItem('prayerJournal')) || [];
-                prayers.splice(index, 1);
-                localStorage.setItem('prayerJournal', JSON.stringify(prayers));
-                loadPrayers();
-            }
-            
-            document.getElementById('save-prayer-btn').addEventListener('click', savePrayer);
-            
-            // Initial load
-            loadNotes();
-            loadPrayers();
-        });
+            });
+        }
     </script>
 </body>
 </html>
